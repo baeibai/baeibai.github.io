@@ -20,7 +20,7 @@ var e = [];
 var heartPointsCount = 0;
 var loaded = false;
 var time = 0;
-var config = { traceK: 0.3, timeDelta: 0.07 };
+var config = { traceK: 0.3, timeDelta: 0.1 };
 
 // 心形公式
 function heartPosition(rad) {
@@ -170,6 +170,7 @@ window.addEventListener("resize", function () {
   resizeCanvas();
 
 });
+
 
 
 
