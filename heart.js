@@ -20,7 +20,7 @@ var e = [];
 var heartPointsCount = 0;
 var loaded = false;
 var time = 0;
-var config = { traceK: 0.4, timeDelta: 0.03 };
+var config = { traceK: 0.4, timeDelta: 0.05 };
 
 // 心形公式
 function heartPosition(rad) {
@@ -68,10 +68,11 @@ function startHeart() {
     var obj = {
       vx: 0, vy: 0,
       R: 2,
-      speed: rand() + 5,
+      // 調整這兩個參數來改變速度和聚集效果
+      speed: rand() * 10 + 10,  // 增加基礎速度，讓粒子移動更快
       q: ~~(rand() * heartPointsCount),
       D: 2 * (i % 2) - 1,
-      force: 0.2 * rand() + 0.7,
+      force: 0.1 * rand() + 0.8, // 增加力量（減少摩擦力），讓粒子更快達到目標
       f: "hsla(0," + ~~(40 * rand() + 60) + "%," +
         ~~(60 * rand() + 20) + "%,.3)",
       trace: []
@@ -86,11 +87,9 @@ function startHeart() {
 
 // resize
 function resizeCanvas() {
-  // 使用 document.documentElement.clientWidth/clientHeight 來獲取可視區域尺寸
   width = canvas.width = document.documentElement.clientWidth;
   height = canvas.height = document.documentElement.clientHeight;
   
-  // 動態計算 koef，讓愛心能適應不同螢幕大小
   const heartOriginalWidth = 420;
   const heartOriginalHeight = 26;
   const scaleRatio = Math.min(width / heartOriginalWidth, height / heartOriginalHeight) * 0.8;
