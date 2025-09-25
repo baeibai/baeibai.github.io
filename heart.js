@@ -12,8 +12,8 @@ var canvas, ctx, width, height, koef;
 var rand = Math.random;
 
 // 原始愛心參數 (不變)
-var traceCount = 50; // 強制為 50，以維持與電腦版相同效果
-var dr = 0.1; // 強制為 0.1，以維持與電腦版相同效果
+var traceCount = 50; 
+var dr = 0.1;
 var pointsOrigin = [];
 var targetPoints = [];
 var e = [];
@@ -43,7 +43,7 @@ function startHeart() {
 
   canvas = document.getElementById("heart");
   ctx = canvas.getContext("2d");
-  resizeCanvas(); // 首次載入時調整畫布大小
+  resizeCanvas();
 
   // 原始點集合
   pointsOrigin = [];
@@ -86,17 +86,16 @@ function startHeart() {
 
 // resize
 function resizeCanvas() {
-  width = canvas.width = window.innerWidth;
-  height = canvas.height = window.innerHeight;
-
+  // 使用 document.documentElement.clientWidth/clientHeight 來獲取可視區域尺寸
+  width = canvas.width = document.documentElement.clientWidth;
+  height = canvas.height = document.documentElement.clientHeight;
+  
   // 動態計算 koef，讓愛心能適應不同螢幕大小
-  // 以原始愛心寬度 (420) 和高度 (26) 為基準，調整至螢幕寬度的 80%
-  // 這樣愛心在小螢幕上會變小，在大螢幕上會變大，維持比例
-  const heartOriginalWidth = 420; // 210 * 2
-  const heartOriginalHeight = 26; // 13 * 2
+  const heartOriginalWidth = 420;
+  const heartOriginalHeight = 26;
   const scaleRatio = Math.min(width / heartOriginalWidth, height / heartOriginalHeight) * 0.8;
   
-  koef = scaleRatio / (window.innerWidth / heartOriginalWidth); // 動態係數
+  koef = scaleRatio / (document.documentElement.clientWidth / heartOriginalWidth);
   
   if (ctx) {
     ctx.fillStyle = "rgba(0,0,0,1)";
