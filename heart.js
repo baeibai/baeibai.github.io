@@ -69,7 +69,7 @@ function startHeart() {
       vx: 0, vy: 0,
       R: 2,
       // 調整這兩個參數來改變速度和聚集效果
-      speed: rand() * 40 + 40,  // 增加基礎速度，讓粒子移動更快
+      speed: rand() * 50 + 50,  // 增加基礎速度，讓粒子移動更快
       q: ~~(rand() * heartPointsCount),
       D: 2 * (i % 2) - 1,
       force: 0.05 * rand() + 0.95, // 增加力量（減少摩擦力），讓粒子更快達到目標
@@ -170,4 +170,5 @@ window.addEventListener("resize", function () {
   resizeCanvas();
 
 });
+
 
