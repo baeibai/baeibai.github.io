@@ -7,16 +7,13 @@ window.requestAnimationFrame =
     return setTimeout(callback, 1000 / 60);
   };
 
-// 判斷是否為行動裝置
+// Global variables
+var canvas, ctx, width, height, koef;
+var rand = Math.random;
 var mobile = (/android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(
   (navigator.userAgent || navigator.vendor || window.opera).toLowerCase()
 ));
 
-// 全域變數
-var canvas, ctx, width, height, koef;
-var rand = Math.random;
-
-// 愛心參數
 var traceCount = mobile ? 20 : 50;
 var dr = mobile ? 0.3 : 0.1;
 var pointsOrigin = [];
@@ -27,11 +24,7 @@ var loaded = false;
 var time = 0;
 var config = { traceK: 0.4, timeDelta: 0.03 };
 
-// click 提示相關
-var showClick = false;
-var clickTimeout = null;
-
-// 心形公式
+// Heart formula
 function heartPosition(rad) {
   return [
     Math.pow(Math.sin(rad), 3),
@@ -45,8 +38,8 @@ function scaleAndTranslate(pos, sx, sy, dx, dy) {
   return [dx + pos[0] * sx, dy + pos[1] * sy];
 }
 
-// 初始化
-function init() {
+// Initialization function
+function startHeart() {
   if (loaded) return;
   loaded = true;
 
@@ -55,7 +48,7 @@ function init() {
   ctx = canvas.getContext("2d");
   resizeCanvas();
 
-  // 原始點集合
+  // Create heart shape points
   pointsOrigin = [];
   for (var i = 0; i < Math.PI * 2; i += dr) {
     pointsOrigin.push(scaleAndTranslate(heartPosition(i), 210, 13, 0, 0));
@@ -70,7 +63,7 @@ function init() {
 
   targetPoints = new Array(heartPointsCount);
 
-  // 粒子
+  // Create particles
   e = [];
   for (var i = 0; i < heartPointsCount; i++) {
     var x = rand() * width;
@@ -90,18 +83,13 @@ function init() {
     e.push(obj);
   }
 
-  // 開始動畫
+  // Start the animation loop
   requestAnimationFrame(loop);
-
-  // 3 秒後顯示 Click 提示
-  if (clickTimeout) clearTimeout(clickTimeout);
-  clickTimeout = setTimeout(() => {
-    showClick = true;
-  }, 3000);
 }
 
-// resize
+// Resize handler
 function resizeCanvas() {
+  if (!canvas) return;
   width = canvas.width = Math.round(koef * innerWidth);
   height = canvas.height = Math.round(koef * innerHeight);
   if (ctx) {
@@ -110,7 +98,7 @@ function resizeCanvas() {
   }
 }
 
-// pulse
+// Pulse effect
 function pulse(kx, ky) {
   for (var i = 0; i < pointsOrigin.length; i++) {
     targetPoints[i] = [];
@@ -119,7 +107,7 @@ function pulse(kx, ky) {
   }
 }
 
-// 主迴圈
+// Main animation loop
 function loop() {
   var n = -Math.cos(time);
   pulse((1 + n) * 0.5, (1 + n) * 0.5);
@@ -172,16 +160,12 @@ function loop() {
   requestAnimationFrame(loop);
 }
 
-// resize 監聽
+// Listen for window resize
 window.addEventListener("resize", function () {
   if (!canvas) return;
   koef = mobile ? 0.5 : 1;
   resizeCanvas();
 });
 
-// 啟動
-if (document.readyState === "complete" || document.readyState === "interactive") {
-  init();
-} else {
-  document.addEventListener("DOMContentLoaded", init, false);
-}
+// Initial call to startHeart is removed from here.
+// It will now be called by main.js after the button is clicked.
