@@ -7,15 +7,13 @@ window.requestAnimationFrame =
     return setTimeout(callback, 1000 / 60);
   };
 
-// Global variables
+// 全域變數
 var canvas, ctx, width, height, koef;
 var rand = Math.random;
-var mobile = (/android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(
-  (navigator.userAgent || navigator.vendor || window.opera).toLowerCase()
-));
 
-var traceCount = mobile ? 20 : 50;
-var dr = mobile ? 0.3 : 0.1;
+// 原始愛心參數 (不變)
+var traceCount = 50; // 強制為 50，以維持與電腦版相同效果
+var dr = 0.1; // 強制為 0.1，以維持與電腦版相同效果
 var pointsOrigin = [];
 var targetPoints = [];
 var e = [];
@@ -24,7 +22,7 @@ var loaded = false;
 var time = 0;
 var config = { traceK: 0.4, timeDelta: 0.03 };
 
-// Heart formula
+// 心形公式
 function heartPosition(rad) {
   return [
     Math.pow(Math.sin(rad), 3),
@@ -38,17 +36,16 @@ function scaleAndTranslate(pos, sx, sy, dx, dy) {
   return [dx + pos[0] * sx, dy + pos[1] * sy];
 }
 
-// Initialization function
+// 初始化
 function startHeart() {
   if (loaded) return;
   loaded = true;
 
-  koef = mobile ? 0.5 : 1;
   canvas = document.getElementById("heart");
   ctx = canvas.getContext("2d");
-  resizeCanvas();
+  resizeCanvas(); // 首次載入時調整畫布大小
 
-  // Create heart shape points
+  // 原始點集合
   pointsOrigin = [];
   for (var i = 0; i < Math.PI * 2; i += dr) {
     pointsOrigin.push(scaleAndTranslate(heartPosition(i), 210, 13, 0, 0));
@@ -63,7 +60,7 @@ function startHeart() {
 
   targetPoints = new Array(heartPointsCount);
 
-  // Create particles
+  // 粒子
   e = [];
   for (var i = 0; i < heartPointsCount; i++) {
     var x = rand() * width;
@@ -83,22 +80,31 @@ function startHeart() {
     e.push(obj);
   }
 
-  // Start the animation loop
+  // 開始動畫
   requestAnimationFrame(loop);
 }
 
-// Resize handler
+// resize
 function resizeCanvas() {
-  if (!canvas) return;
-  width = canvas.width = Math.round(koef * innerWidth);
-  height = canvas.height = Math.round(koef * innerHeight);
+  width = canvas.width = window.innerWidth;
+  height = canvas.height = window.innerHeight;
+
+  // 動態計算 koef，讓愛心能適應不同螢幕大小
+  // 以原始愛心寬度 (420) 和高度 (26) 為基準，調整至螢幕寬度的 80%
+  // 這樣愛心在小螢幕上會變小，在大螢幕上會變大，維持比例
+  const heartOriginalWidth = 420; // 210 * 2
+  const heartOriginalHeight = 26; // 13 * 2
+  const scaleRatio = Math.min(width / heartOriginalWidth, height / heartOriginalHeight) * 0.8;
+  
+  koef = scaleRatio / (window.innerWidth / heartOriginalWidth); // 動態係數
+  
   if (ctx) {
     ctx.fillStyle = "rgba(0,0,0,1)";
     ctx.fillRect(0, 0, width, height);
   }
 }
 
-// Pulse effect
+// pulse
 function pulse(kx, ky) {
   for (var i = 0; i < pointsOrigin.length; i++) {
     targetPoints[i] = [];
@@ -107,7 +113,7 @@ function pulse(kx, ky) {
   }
 }
 
-// Main animation loop
+// 主迴圈
 function loop() {
   var n = -Math.cos(time);
   pulse((1 + n) * 0.5, (1 + n) * 0.5);
@@ -160,12 +166,8 @@ function loop() {
   requestAnimationFrame(loop);
 }
 
-// Listen for window resize
+// resize 監聽
 window.addEventListener("resize", function () {
   if (!canvas) return;
-  koef = mobile ? 0.5 : 1;
   resizeCanvas();
 });
-
-// Initial call to startHeart is removed from here.
-// It will now be called by main.js after the button is clicked.
