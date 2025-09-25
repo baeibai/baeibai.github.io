@@ -1,0 +1,236 @@
+/* 保留原本的 reset & 背景 */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+p {
+  font-family: "Brush Script MT", "Comic Sans MS", cursive;
+  text-shadow: 2px 2px 6px rgba(0,0,0,0.4);
+  font-weight: bold;
+}
+
+body {
+  height: 100vh;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: sans-serif;
+  background-color: #000;
+  overflow: hidden;
+}
+
+/* --- Envelope (保持不變) --- */
+.wrapper {
+  height: 200px;
+  width: 300px;
+  background-color: #3760C9;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  z-index: 0;
+  cursor: pointer;
+}
+
+.lid {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  top: 0;
+  left: 0;
+  border-right: 150px solid transparent;
+  border-bottom: 100px solid transparent;
+  border-left: 150px solid transparent;
+  transform-origin: top;
+  transition: transform 0.25s linear;
+}
+
+.lid.one {
+  border-top: 100px solid #658ced;
+  transform: rotateX(0deg);
+  z-index: 3;
+  transition-delay: 0.75s;
+}
+
+.lid.two {
+  border-top: 100px solid #3760C9;
+  transform: rotateX(90deg);
+  z-index: 1;
+  transition-delay: 0.5s;
+}
+
+.envelope {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  top: 0;
+  left: 0;
+  border-top: 100px solid transparent;
+  border-right: 150px solid #C4DFF0;
+  border-bottom: 100px solid #C4DFF0;
+  border-left: 150px solid #a4d4f2;
+  z-index: 3;
+}
+
+.letter {
+  position: absolute;
+  top: 0;
+  width: 80%;
+  height: 80%;
+  background-color: white;
+  border-radius: 15px;
+  z-index: 2;
+  transition: 0.5s;
+}
+
+.letter p {
+  text-align: center;
+  font-size: 30px;
+  margin-top: 30px;
+  color: #3B4049;
+}
+
+/* --- 愛心畫布 --- */
+canvas#heart {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* --- Dialog 信紙 --- */
+#paperDialog {
+  display: none;
+  position: fixed;
+  top: -100%; /* 從螢幕外開始 */
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60%;
+  max-width: 500px;
+  background: #fff url("https://www.transparenttextures.com/patterns/paper-1.png");
+  border-radius: 12px;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+  padding: 20px;
+  opacity: 0;
+  transition: all 0.8s ease;
+  z-index: 20;
+}
+
+#paperDialog.show {
+  top: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 1;
+}
+
+.dialog-content p {
+  font-size: 20px;
+  font-family: "Courier New", monospace;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+#confirmBtn {
+  display: block;
+  margin: 0 auto;
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: #3760C9;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+#confirmBtn:hover {
+  background-color: #274a96;
+}
+
+/* 原本的信紙 dialog */
+#paperDialog {
+  display: none;
+  position: fixed;
+  top: -100%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60%;
+  max-width: 500px;
+  background: #fff url("https://www.transparenttextures.com/patterns/paper-1.png");
+  border-radius: 12px;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+  padding: 20px;
+  opacity: 0;
+  transition: all 0.8s ease, opacity 1s ease; /* 增加透明度動畫 */
+  z-index: 20;
+}
+
+#paperDialog.show {
+  top: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 1;
+}
+
+#paperDialog.fade-out {
+  opacity: 0;
+}
+
+/* Button */
+#confirmBtn {
+  display: block;
+  margin: 0 auto;
+  padding: 10px 20px;
+  font-size: 18px;
+  background-color: #e63946;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  animation: heartbeat 1s infinite;
+}
+
+#confirmBtn:hover {
+  background-color: #b71c1c;
+}
+
+/* --- Click! 提示 --- */
+#clickText {
+  display: none;
+  position: absolute;
+  top: 20px;
+  width: 100%;
+  text-align: center;
+  font-family: "Brush Script MT", "Comic Sans MS", cursive;
+  font-size: 64px;
+  color: #ff4d6d;
+  text-shadow: 2px 2px 6px rgba(0,0,0,0.4);
+  font-weight: bold;
+  z-index: 10;
+
+  /* 心跳動畫 */
+  animation: heartbeat 1.5s infinite;
+}
+
+/* --- 信紙心跳閃爍 --- */
+#letter {
+  animation: heartbeatGlow 1.5s infinite;
+}
+
+/* 心跳放大縮小動畫 */
+@keyframes heartbeat {
+  0%   { transform: scale(1); opacity: 0.9; }
+  25%  { transform: scale(1.2); opacity: 1; }
+  40%  { transform: scale(1); opacity: 0.85; }
+  60%  { transform: scale(1.15); opacity: 1; }
+  100% { transform: scale(1); opacity: 0.9; }
+}
+
+/* 信紙閃爍心跳 */
+@keyframes heartbeatGlow {
+  0%   { box-shadow: 0 0 10px rgba(255, 77, 109, 0.3); }
+  25%  { box-shadow: 0 0 25px rgba(255, 77, 109, 0.8); }
+  40%  { box-shadow: 0 0 15px rgba(255, 77, 109, 0.4); }
+  60%  { box-shadow: 0 0 30px rgba(255, 77, 109, 0.9); }
+  100% { box-shadow: 0 0 10px rgba(255, 77, 109, 0.3); }
+}
